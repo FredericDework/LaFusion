@@ -32,25 +32,25 @@ This project is fully open-source and welcomes contributions!
 1.  **Clone the Repository:**
     ```bash
     git clone https://github.com/FredericDework/LaFusion.git
-    cd LaFusion.Api
+    cd LaFusion.API
     ```
 
 2.  **Restore Dependencies:**
     ```bash
     dotnet restore
     ```
-     **configure the port on LaFusion/Properties/launchSettings.json file**
+     **configure the port on LaFusion.API/Properties/launchSettings.json file**
     
 4.  **Run the API:**
     ```bash
     dotnet run
     ```
-    The API will typically start on `https://localhost:[PORT]`.
+    The API will typically start on `https://localhost:[YOUR_CONFIGURED_PORT]`.
 
 
 5.  **Access Documentation:**
     Open your browser to the Swagger UI for testing the endpoint:
-    `https://localhost:[PORT]/swagger`
+    `https://localhost:[YOUR_CONFIGURED_PORT]/swagger`
 
 
 
@@ -74,7 +74,7 @@ You must send the files as a collection of `IFormFile` under the parameter name 
 
 ## Contribution
 
-We welcome contributions! If you have suggestions, bug reports, or want to contribute code, please check out our [CONTRIBUTING.md] (File to be created later) guidelines.
+We welcome contributions! If you have suggestions, bug reports, or want to contribute code, please check out our guidelines.
 
 ### How to Contribute
 
