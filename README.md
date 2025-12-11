@@ -39,14 +39,14 @@ This project is fully open-source and welcomes contributions!
     ```bash
     dotnet restore
     ```
-
-3.  **Run the API:**
+     **configure the port on LaFusion/Properties/launchSettings.json file**
+    
+4.  **Run the API:**
     ```bash
     dotnet run
     ```
     The API will typically start on `https://localhost:[PORT]`.
 
-    You can configure the port on the Properties/launchSettings.json file
 
 5.  **Access Documentation:**
     Open your browser to the Swagger UI for testing the endpoint:
