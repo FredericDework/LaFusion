@@ -31,7 +31,7 @@ This project is fully open-source and welcomes contributions!
 
 1.  **Clone the Repository:**
     ```bash
-    git clone [YOUR_REPOSITORY_URL]
+    git clone https://github.com/FredericDework/LaFusion.git
     cd LaFusion.Api
     ```
 
@@ -44,11 +44,13 @@ This project is fully open-source and welcomes contributions!
     ```bash
     dotnet run
     ```
-    The API will typically start on `https://localhost:7113`.
+    The API will typically start on `https://localhost:[PORT]`.
 
-4.  **Access Documentation:**
+    You can configure the port on the Properties/launchSettings.json file
+
+5.  **Access Documentation:**
     Open your browser to the Swagger UI for testing the endpoint:
-    `https://localhost:7113/swagger`
+    `https://localhost:[PORT]/swagger`
 
 
 
