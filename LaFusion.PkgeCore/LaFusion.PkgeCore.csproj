@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<PackageId>LaFusion.PkgeCore</PackageId>
+		<Version>1.0.0</Version>
+		<Authors>FN</Authors>
+		<Company>LaFusion</Company> 
+		<Description>Core library for merging multiple PDF documents using PdfSharp. Supports various document types including scans and images.</Description>
+		<RepositoryUrl>https://github.com/FredericDework/LaFusion</RepositoryUrl> 
+		<PackageTags>pdf;merge;fusion;dotnet;pdfsharp</PackageTags>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile> 
+		<PackageReadmeFile>README.md</PackageReadmeFile> 
+		<PackageIcon>icon.png</PackageIcon> 
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="PDFsharp" Version="6.2.3" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\LICENSE" Pack="true" PackagePath="\" /> 
+		<None Include="..\README.md" Pack="true" PackagePath="\" /> 
+		<None Include="..\icon.png" Pack="true" PackagePath="\" /> 
+	</ItemGroup>
+
+</Project>

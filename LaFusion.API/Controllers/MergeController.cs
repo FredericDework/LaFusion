@@ -1,7 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using PdfSharp.Pdf;
-using PdfSharp.Pdf.IO;
-using System.Net.Mime;
+﻿using System.Net.Mime;
+using LaFusion.PkgeCore.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace LaFusion.Api.Controllers
 {
@@ -23,6 +22,7 @@ namespace LaFusion.Api.Controllers
         /// </summary>
         /// <param name="files">A collection of PDF files to be merged (multipart/form-data).</param>
         /// <returns>The merged PDF document as a file stream.</returns>
+        
         [HttpPost("merge")]
         [Consumes("multipart/form-data")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(FileContentResult))]
@@ -31,64 +31,31 @@ namespace LaFusion.Api.Controllers
         public async Task<IActionResult> MergePdfs([FromForm] List<IFormFile> files)
         {
             // 1. Input Validation
-            if (files == null || files.Count == 0)
+            if (files == null || files.Count == 0 || files.Any(f => f.Length == 0))
             {
-                _logger.LogWarning("Merge request failed: No files were uploaded.");
-                return BadRequest(new { Message = "No files uploaded. Please provide at least one PDF file for merging." });
+                return BadRequest(new { Message = "No valid files uploaded. Please provide at least one PDF file." });
             }
 
-            // Ensure all files are actually PDF files (basic check, could be enhanced)
-            if (files.Any(f => !f.FileName.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase)))
-            {
-                _logger.LogWarning("Merge request failed: Non-PDF file detected.");
-                return BadRequest(new { Message = "All uploaded files must be in PDF format." });
-            }
-
-            // 2. Core Fusion Logic
+            // 2. Data Preparation for Core Library
+            var pdfStreams = new List<MemoryStream>();
             try
             {
-                // Create the final output document
-                PdfDocument outputDocument = new PdfDocument();
-
                 foreach (var file in files)
                 {
-                    // Use a MemoryStream to read the uploaded file content
-                    using (var stream = new MemoryStream())
-                    {
-                        // Copy the uploaded file stream to the memory stream
-                        await file.CopyToAsync(stream);
-                        stream.Position = 0; // Reset position to the beginning for reading
-
-                        // Use PdfSharp's PdfReader to open the source document from the stream
-                        using (PdfDocument inputDocument = PdfReader.Open(stream, PdfDocumentOpenMode.Import))
-                        {
-                            // Iterate through all pages of the source document
-                            // This ensures that pages with images/scans are correctly imported
-                            for (int i = 0; i < inputDocument.PageCount; i++)
-                            {
-                                // Import the page from the input document to the output document
-                                outputDocument.AddPage(inputDocument.Pages[i]);
-                            }
-                        }
-                    }
-                    _logger.LogInformation($"Successfully imported {file.FileName} with {outputDocument.PageCount} pages total.");
+                    // Copy IFormFile content into a MemoryStream required by the Core library
+                    var stream = new MemoryStream();
+                    await file.CopyToAsync(stream);
+                    pdfStreams.Add(stream);
                 }
 
-                // 3. Prepare Output
-                // Use a MemoryStream to save the resulting PDF document
-                using (var outputStream = new MemoryStream())
+                // 3. Core Fusion Logic (Single call to the NuGet Library logic)
+                using (var mergedStream = PdfMerger.Merge(pdfStreams))
                 {
-                    outputDocument.Save(outputStream, false);
-                    outputStream.Position = 0;
-
-                    // Convert the stream to a byte array to return as a file
-                    var fileBytes = outputStream.ToArray();
-
-                    // Set the file name for the download
+                    // 4. Prepare Output
+                    var fileBytes = mergedStream.ToArray();
                     var fileName = $"LaFusion_Merged_{DateTime.Now:yyyyMMddHHmmss}.pdf";
 
-                    // Return the file content.
-                    // ContentType is set to "application/pdf"
+                    // Return the file content
                     return File(
                         fileBytes,
                         MediaTypeNames.Application.Pdf,
@@ -101,6 +68,15 @@ namespace LaFusion.Api.Controllers
                 _logger.LogError(ex, "An error occurred during PDF merging.");
                 return StatusCode(StatusCodes.Status500InternalServerError, new { Message = "An internal error occurred while processing the PDF files." });
             }
+            finally
+            {
+                // Ensure all streams are cleaned up
+                foreach (var stream in pdfStreams)
+                {
+                    stream.Dispose();
+                }
+            }
         }
+
     }
 }
